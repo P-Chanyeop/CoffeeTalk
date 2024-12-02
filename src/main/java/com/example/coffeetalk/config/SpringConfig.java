@@ -15,12 +15,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @Configuration
 public class SpringConfig {
 
-    @Bean
+    /*@Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .formLogin(formLogin ->
@@ -49,8 +52,13 @@ public class SpringConfig {
                                 .invalidateHttpSession(true)
                                 .deleteCookies("JSESSIONID")
                 )
+
                 // CSRF 비활성화
                 .csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable);
+
+        http.cors().and()
+                .authorizeHttpRequests()
+                .anyRequest().authenticated();
 
         return http.build();
     }
@@ -60,7 +68,17 @@ public class SpringConfig {
         return new BCryptPasswordEncoder();
     }
 
-
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:3000"); // React 개발 서버
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 //
 //    @Bean
@@ -71,5 +89,5 @@ public class SpringConfig {
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
+    }*/
 }
