@@ -18,12 +18,48 @@ public class UserController {
     }
 
     // TODO : 로그인 정보 매핑
-    @PostMapping("/login/sign_in")
+    @PostMapping("/sign_in")
     public ResponseEntity<String> loginPage(@RequestParam("username") String username, @RequestParam("password") String password) {
 
         // 로그인 수행
         User user = userService.loginHomePage(username, password);
 
-        return ResponseEntity.badRequest().body("login failed.");
+        return ResponseEntity.badRequest().body("로그인 실패. 아이디 및 비밀번호를 확인해주세요.");
     }
+
+    // TODO : 회원가입 정보 매핑
+    @PostMapping("/sign_up")
+    public ResponseEntity<String> signUp(@RequestParam("username") String username, @RequestParam("password") String password) {
+
+        // 중복회원 검사
+        User findUser = userService.findUser(username);
+
+        if (findUser != null) {
+            return ResponseEntity.badRequest().body("이미 존재하는 회원입니다.");
+        }
+
+        // 회원가입 수행
+        User user = userService.join(username, password);
+
+        if (user == null) {
+            return ResponseEntity.badRequest().body("회원가입 실패");
+        }
+
+        return ResponseEntity.ok("회원가입 성공");
+    }
+
+    // TODO : 중복 아이디 검사
+    @PostMapping("/id_check")
+    public ResponseEntity<String> idCheck(@RequestParam("username") String username) {
+
+        // 중복회원 검사
+        User findUser = userService.findUser(username);
+
+        if (findUser != null) {
+            return ResponseEntity.badRequest().body("이미 존재하는 회원입니다.");
+        }
+
+        return ResponseEntity.ok("사용 가능한 아이디입니다.");
+    }
+
 }

@@ -18,6 +18,19 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public User join(String username, String password){
+        // password Bcrpyt로 암호화
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encryptedPassword = passwordEncoder.encode(password);
+
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPassword(encryptedPassword);
+        newUser.setUserRole("user");
+
+        return this.userRepository.save(newUser);
+    }
+
     public User loginHomePage(String username, String password) {
 
         // password Bcrpyt로 암호화
@@ -41,5 +54,9 @@ public class UserService {
             log.error("비밀번호가 일치하지 않습니다.");
         }
         return null;
+    }
+
+    public User findUser(String username) {
+        return this.userRepository.findByUsername(username);
     }
 }
