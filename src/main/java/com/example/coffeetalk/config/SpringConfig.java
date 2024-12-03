@@ -1,6 +1,7 @@
 package com.example.coffeetalk.config;
 
 
+import com.example.coffeetalk.utility.JwtAuthenticationFilter;
 import jakarta.servlet.DispatcherType;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -22,6 +24,38 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @Configuration
 public class SpringConfig {
+
+    /*
+    * TODO : JWT 인증 필터 추가
+    */
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SpringConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+        http.csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/auth/**").permitAll() // 인증 없이 접근 가능한 경로
+                        .anyRequest().authenticated() // 그 외 경로는 인증 필요
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // 비밀번호 암호화
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
 
     /*@Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
