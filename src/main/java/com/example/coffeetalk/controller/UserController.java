@@ -18,6 +18,7 @@ public class UserController {
     }
 
     // TODO : 로그인 정보 매핑
+    // TODO : JWT 토큰 발급 및 인증 처리 구현 필요 2024-12-02
     @PostMapping("/sign_in")
     public ResponseEntity<String> loginPage(@RequestParam("username") String username, @RequestParam("password") String password) {
 
