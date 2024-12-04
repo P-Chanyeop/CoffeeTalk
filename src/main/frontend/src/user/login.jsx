@@ -10,19 +10,15 @@ const Login = () => {
     //     password: "",
     // };
 
-    const Sign_in = (e) => {
+    const Sign_in = async (e) => {
         e.preventDefault();
 
-        axios({
-            method: "get",
-            url: "/user/sign_in",
-            data: {
-                username: username,
-                password: password,
-            },
-        })
-            .then((response) => console.log(response.data))
-            .catch((error) => console.log(error));
+        const response = await axios
+            .post("/user/sign_in", {username, password})
+            .then((response) => console.log(response))
+            .catch((error) => console.error(error));
+
+        return response;
     };
 
     // useEffect(() => {}, []);
@@ -32,7 +28,7 @@ const Login = () => {
             <form
                 name="login"
                 action="/user/sign_in"
-                method="get"
+                method="post"
                 onSubmit={Sign_in}
             >
                 <input
