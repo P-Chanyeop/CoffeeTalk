@@ -13,27 +13,19 @@ import org.springframework.stereotype.Service;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
-    private final UserService userService;
 
     @Autowired
-    public ProfileService(ProfileRepository profileRepository, UserService userService) {
+    public ProfileService(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
-        this.userService = userService;
     }
 
-    public Profile createProfile(ProfileRequest request) {
-        User user = this.userService.findUser(request.getUsername());
+    public Profile createProfile(ProfileRequest request, User user) {
+        Profile profile = request.toEntity(user);
 
-        if (user != null) {
-            Profile profile = request.toEntity(user);
-            Profile newProfile = this.profileRepository.save(profile);
+        return this.profileRepository.save(profile);
+    }
 
-            if (newProfile != null) {
-                return newProfile;
-            }
-        }
-
-        log.error("Failed to create profile");
-        return null;
+    public Profile getProfile(User user) {
+        return this.profileRepository.findProfileByUser(user);
     }
 }

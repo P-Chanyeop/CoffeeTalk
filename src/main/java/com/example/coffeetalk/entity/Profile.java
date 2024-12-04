@@ -21,6 +21,8 @@ public class Profile {
 
     private String profileName;
 
+    private String profileEmail;
+
     @Column(length = 1000)
     private String interest;
 

@@ -11,12 +11,14 @@ import java.util.List;
 @Setter
 public class ProfileRequest {
     private String username;
+    private String email;
     private List<String> interests;
     private List<String> techStacks;
 
     public Profile toEntity(User user){
         return Profile.builder()
                 .profileName(username)
+                .profileEmail(email)
                 .interest(String.join(",", interests))
                 .techStacks(String.join(",", techStacks))
                 .build();
