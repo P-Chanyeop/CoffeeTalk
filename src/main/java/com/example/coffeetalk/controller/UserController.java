@@ -5,11 +5,9 @@ import com.example.coffeetalk.service.UserService;
 import com.example.coffeetalk.utility.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.List;
 
 @RestController
@@ -75,7 +73,7 @@ public class UserController {
     }
 
     // TODO : 중복 아이디 검사
-    @PostMapping("/id_check")
+    @GetMapping("/id_check")
     public ResponseEntity<String> idCheck(@RequestParam("username") String username) {
 
         // 중복회원 검사
