@@ -38,15 +38,18 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
-        http.csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화
+        http.csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화
+                 // X-Frame-Options 설정
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**").permitAll() // 인증 없이 접근 가능한 경로
-                        .anyRequest().authenticated() // 그 외 경로는 인증 필요
+                                .requestMatchers("/h2-console/**").permitAll() // h2-console 경로는 인증 없이 접근 가능
+                        .requestMatchers("/**").permitAll() // 인증 없이 접근 가능한 경로
+                        /*.anyRequest().authenticated() // 그 외 경로는 인증 필요*/
                 )
                 // cors 비활성화
-                .cors(cors -> cors.disable())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
-
+                /*.cors(AbstractHttpConfigurer::disable)*/
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                ; // JWT 필터 추가
+        http.headers().frameOptions().sameOrigin();
         return http.build();
     }
 
@@ -62,9 +65,11 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+        registry.addMapping("/**") // 모든 경로에 대해 CORS를 허용
+                .allowedOrigins("http://localhost:3000") // 허용할 출처
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
+                .allowedHeaders("*") // 모든 헤더 허용
+                .allowCredentials(true); // 자격 증명 허용
     }
 
 
@@ -73,16 +78,16 @@ public class SpringConfig implements WebMvcConfigurer {
         http
                 .formLogin(formLogin ->
                                 formLogin
-                                        .loginPage("/user/login").permitAll()// 로그인 페이지 경로 지정
-                                        .loginProcessingUrl("/user/login/sign_in") // 로그인 폼 전송 URL 지정
+                                        .loginPage("/member/login").permitAll()// 로그인 페이지 경로 지정
+                                        .loginProcessingUrl("/member/login/sign_in") // 로그인 폼 전송 URL 지정
                                         .usernameParameter("username") // 사용자명 파라미터 지정
                                         .passwordParameter("password") // 비밀번호 파라미터 지정
-                                        .failureUrl("/user/login").permitAll()
+                                        .failureUrl("/member/login").permitAll()
                                         .defaultSuccessUrl("/index", true).permitAll()// 로그인 성공 시 기본적으로 이동할 URL
                 )
 //                .sessionManagement(sessionManagement ->
 //                        sessionManagement
-//                                .invalidSessionUrl("/user/login") // 세션이 유효하지 않을 때 이동할 URL
+//                                .invalidSessionUrl("/member/login") // 세션이 유효하지 않을 때 이동할 URL
 //                                .maximumSessions(1) // 최대 세션 수
 //                                .maxSessionsPreventsLogin(true))
                 .headers(headers ->
@@ -91,9 +96,9 @@ public class SpringConfig implements WebMvcConfigurer {
                                         XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
                 .logout(logout ->
                         logout
-                                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-                                .logoutUrl("/user/logout").permitAll()// 로그아웃 URL 지정
-                                .logoutSuccessUrl("/user/login") // 로그아웃 성공 시 이동할 URL
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
+                                .logoutUrl("/member/logout").permitAll()// 로그아웃 URL 지정
+                                .logoutSuccessUrl("/member/login") // 로그아웃 성공 시 이동할 URL
                                 .invalidateHttpSession(true)
                                 .deleteCookies("JSESSIONID")
                 )

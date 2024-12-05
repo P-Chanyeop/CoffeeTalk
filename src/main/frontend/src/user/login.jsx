@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import App from "../App.css";
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -14,7 +15,7 @@ const Login = () => {
         e.preventDefault();
 
         const response = await axios
-            .post("/user/sign_in", {username, password})
+            .post("/api/user/sign_in", {"username" : username, "password" : password})
             .then((response) => console.log(response))
             .catch((error) => console.error(error));
 
@@ -24,10 +25,10 @@ const Login = () => {
     // useEffect(() => {}, []);
 
     return (
-        <div>
+        <div className={App}>
             <form
                 name="login"
-                action="/user/sign_in"
+                action="/api/user/sign_in"
                 method="post"
                 onSubmit={Sign_in}
             >

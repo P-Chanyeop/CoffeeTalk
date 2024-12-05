@@ -16,8 +16,8 @@ public class Profile {
     private Integer profileId;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "userId")
+    private Member member;
 
     private String profileName;
 

@@ -1,6 +1,7 @@
 package com.example.coffeetalk.controller;
 
-import com.example.coffeetalk.entity.User;
+import com.example.coffeetalk.dto.UserLoginDto;
+import com.example.coffeetalk.entity.Member;
 import com.example.coffeetalk.service.UserService;
 import com.example.coffeetalk.utility.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +24,26 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
+
+
     // TODO : 로그인 정보 매핑
     // TODO : JWT 토큰 발급 및 인증 처리 구현 필요 2024-12-02
     @PostMapping("/sign_in")
-    public ResponseEntity<List<String>> loginPage(@RequestParam("username") String username, @RequestParam("password") String password) {
+    public ResponseEntity<List<String>> loginPage(@RequestBody UserLoginDto userLoginDto) {
 
         // 로그인 수행
-        User user = userService.loginHomePage(username, password);
+        Member member = userService.loginHomePage(userLoginDto.getUsername(), userLoginDto.getPassword());
 
-        if (user != null) {
+        if (member != null) {
             // 사용자 권한 정보 설정
             List<String> roles = new ArrayList<String>();
-            roles.add(user.getUserRole());
+            roles.add(member.getUserRole());
 
             // JWT 토큰 발급 및 반환
-            String token = jwtUtil.generateToken(user.getUsername(), roles);
+//            String token = jwtUtil.generateToken(member.getUsername(), roles);
             List<String> response = new ArrayList<String>();
             response.add("로그인 성공");
-            response.add(token);
+            response.add(member.getUsername());
 
             return ResponseEntity.ok(response);
         }
@@ -56,16 +59,16 @@ public class UserController {
     public ResponseEntity<String> signUp(@RequestParam("username") String username, @RequestParam("password") String password) {
 
         // 중복회원 검사
-        User findUser = userService.findUser(username);
+        Member findMember = userService.findUser(username);
 
-        if (findUser != null) {
+        if (findMember != null) {
             return ResponseEntity.badRequest().body("이미 존재하는 회원입니다.");
         }
 
         // 회원가입 수행
-        User user = userService.join(username, password);
+        Member member = userService.join(username, password);
 
-        if (user == null) {
+        if (member == null) {
             return ResponseEntity.badRequest().body("회원가입 실패");
         }
 
@@ -77,9 +80,9 @@ public class UserController {
     public ResponseEntity<String> idCheck(@RequestParam("username") String username) {
 
         // 중복회원 검사
-        User findUser = userService.findUser(username);
+        Member findMember = userService.findUser(username);
 
-        if (findUser != null) {
+        if (findMember != null) {
             return ResponseEntity.badRequest().body("이미 존재하는 회원입니다.");
         }
 

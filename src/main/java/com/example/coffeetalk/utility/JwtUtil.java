@@ -3,6 +3,7 @@ package com.example.coffeetalk.utility;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -15,17 +16,23 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class JwtUtil {
     private final String SECRET_KEY = "your_secret_key";
 
     public String generateToken(String username, List<String> roles) {
-        return Jwts.builder()
-                .setSubject(username)
-                .claim("roles", roles) // 사용자 권한 추가
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1시간 유효
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
+        try{
+            return Jwts.builder()
+                    .setSubject(username)
+                    .claim("roles", roles) // 사용자 권한 추가
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1시간 유효
+                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                    .compact();
+        } catch (Exception e) {
+            log.error("Token generation failed: " + e.getMessage());
+        }
+        return username;
     }
 
     public boolean validateToken(String token) {

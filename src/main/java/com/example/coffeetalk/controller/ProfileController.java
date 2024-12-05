@@ -1,8 +1,8 @@
 package com.example.coffeetalk.controller;
 
 import com.example.coffeetalk.dto.ProfileRequest;
+import com.example.coffeetalk.entity.Member;
 import com.example.coffeetalk.entity.Profile;
-import com.example.coffeetalk.entity.User;
 import com.example.coffeetalk.service.ProfileService;
 import com.example.coffeetalk.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +28,13 @@ public class ProfileController {
     *   */
     public ResponseEntity<Profile> getProfile(@RequestBody ProfileRequest request) {
 
-        User user = this.userService.findUser(request.getUsername());
+        Member member = this.userService.findUser(request.getUsername());
 
-        if (user == null) {
+        if (member == null) {
             return ResponseEntity.badRequest().body(null);
         }
 
-        Profile profile = this.profileService.getProfile(user);
+        Profile profile = this.profileService.getProfile(member);
 
         if (profile == null) {
             return ResponseEntity.badRequest().body(null);
@@ -46,13 +46,13 @@ public class ProfileController {
     /* TODO : 프로필 생성 API
     * */
     public ResponseEntity<?> createProfile(@RequestBody ProfileRequest request) {
-        User user = this.userService.findUser(request.getUsername());
+        Member member = this.userService.findUser(request.getUsername());
 
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User not found");
+        if (member == null) {
+            return ResponseEntity.badRequest().body("Member not found");
         }
 
-        Profile newProfile = this.profileService.createProfile(request, user);
+        Profile newProfile = this.profileService.createProfile(request, member);
 
         if (newProfile == null) {
             return ResponseEntity.badRequest().body("Failed to create profile");

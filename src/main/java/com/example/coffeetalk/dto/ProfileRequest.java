@@ -1,7 +1,7 @@
 package com.example.coffeetalk.dto;
 
+import com.example.coffeetalk.entity.Member;
 import com.example.coffeetalk.entity.Profile;
-import com.example.coffeetalk.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +15,7 @@ public class ProfileRequest {
     private List<String> interests;
     private List<String> techStacks;
 
-    public Profile toEntity(User user){
+    public Profile toEntity(Member member){
         return Profile.builder()
                 .profileName(username)
                 .profileEmail(email)

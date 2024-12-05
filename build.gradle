@@ -50,6 +50,7 @@ tasks.named('test') {
 /*
 *  TODO : SpringBoot 프로젝트가 build 될 때 React 프로젝트가 먼저 build되고, 결과물을 SpringBoot 프로젝트 build 결과물에 포함시킨다는 스크립트
 * */
+/*
 def frontendDir = "$projectDir/src/main/frontend"
 
 sourceSets {
@@ -90,3 +91,4 @@ task copyReactBuildFiles(type: Copy) {
 	from "$frontendDir/build"
 	into "$projectDir/src/main/resources/static"
 }
+*/

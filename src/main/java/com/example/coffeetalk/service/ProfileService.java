@@ -2,7 +2,7 @@ package com.example.coffeetalk.service;
 
 import com.example.coffeetalk.dto.ProfileRequest;
 import com.example.coffeetalk.entity.Profile;
-import com.example.coffeetalk.entity.User;
+import com.example.coffeetalk.entity.Member;
 import com.example.coffeetalk.repository.ProfileRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,13 @@ public class ProfileService {
         this.profileRepository = profileRepository;
     }
 
-    public Profile createProfile(ProfileRequest request, User user) {
-        Profile profile = request.toEntity(user);
+    public Profile createProfile(ProfileRequest request, Member member) {
+        Profile profile = request.toEntity(member);
 
         return this.profileRepository.save(profile);
     }
 
-    public Profile getProfile(User user) {
-        return this.profileRepository.findProfileByUser(user);
+    public Profile getProfile(Member member) {
+        return this.profileRepository.findProfileByMember(member);
     }
 }

@@ -1,11 +1,11 @@
 package com.example.coffeetalk.repository;
 
-import com.example.coffeetalk.entity.User;
+import com.example.coffeetalk.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer>{
+public interface UserRepository extends JpaRepository<Member, Integer>{
 
-    User findByUsername(String username);
+    Member findByUsername(String username);
 }
